@@ -8,7 +8,6 @@ module.exports = {
         new RegExp('^[a-zA-Z0-9]{8,32}')
       )
     })
-    console.log('trynna validate')
     const {error, value} = schema.validate(req.body)
 
     if (error) {

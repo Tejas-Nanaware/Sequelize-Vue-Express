@@ -18,7 +18,11 @@ module.exports = {
         CreatedAt: Date.now(),
         UpdatedAt: Date.now()
       })
-      res.send(user.toJSON())
+      const userJSON = user.toJSON()
+      res.send({
+        user: userJSON,
+        token: jwtSignUser(userJSON)
+      })
     } catch (err) {
       res.status(400).send({
         error: 'Error while registering' + err
@@ -31,21 +35,34 @@ module.exports = {
         Email: {
           [Op.eq]: req.body.email
         },
-        password: {
-          [Op.eq]: req.body.password
-        }
       }
     }).then(user => {
       console.log(user)
       if (!user) {
         res.status(403).send({
-          error: 'Credentials not found'
+          error: 'User not found'
         })
       }
-      const userJSON = user.toJSON()
-      res.send({
-        user: userJSON,
-        token: jwtSignUser(userJSON)
+      
+      user.comparePassword(req.body.password, user)
+      .then(isPasswordValid => {
+        console.log('isPasswordValid', isPasswordValid)
+        
+        if (!isPasswordValid) {
+          res.status(403).send({
+            error: 'Invalid Password'
+          })
+        }
+        const userJSON = user.toJSON()
+        res.send({
+          user: userJSON,
+          token: jwtSignUser(userJSON)
+        })
+      })
+      .catch(err => {
+        res.status(500).send({
+          error: 'Error while comparing passwords' + err
+        })
       })
     }).catch(err => {
       res.status(400).send({
