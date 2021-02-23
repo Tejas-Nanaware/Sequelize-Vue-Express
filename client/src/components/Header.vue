@@ -13,11 +13,13 @@
     <v-spacer></v-spacer>
 
     <v-toolbar-items>
-      <v-btn text dark color="blue">
-        <router-link to="/register">Register</router-link>
+      <v-btn v-if="!$store.state.isUserLoggedIn"
+        text dark color="blue">
+          <router-link to="/register">Register</router-link>
       </v-btn>
-      <v-btn text dark color="blue">
-        <router-link to="/login">Login</router-link>
+      <v-btn v-if="!$store.state.isUserLoggedIn"
+        text dark color="blue">
+          <router-link to="/login">Login</router-link>
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
