@@ -1,11 +1,11 @@
 <template>
   <v-toolbar fixed dark color="blue">
-    <v-toolbar-title class="mr-4">
-      <router-link to="/">MyApp</router-link>
+    <v-toolbar-title class="mr-4" @click="navigateTo({name: 'root'})">
+      MyApp
     </v-toolbar-title>
 
     <v-toolbar-items>
-      <v-btn text dark color="blue">
+      <v-btn text dark>
         <router-link to="/browse">Browse</router-link>
       </v-btn>
     </v-toolbar-items>
@@ -14,12 +14,16 @@
 
     <v-toolbar-items>
       <v-btn v-if="!$store.state.isUserLoggedIn"
-        text dark color="blue">
-          <router-link to="/register">Register</router-link>
+        text dark @click="navigateTo({name: 'register'})">
+          Register
       </v-btn>
       <v-btn v-if="!$store.state.isUserLoggedIn"
-        text dark color="blue">
-          <router-link to="/login">Login</router-link>
+        text dark @click="navigateTo({name: 'login'})">
+          Login
+      </v-btn>
+      <v-btn v-if="$store.state.isUserLoggedIn"
+        text dark @click="logout">
+          Logout
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
@@ -27,6 +31,18 @@
 
 <script>
 export default {
+  methods: {
+    navigateTo (route) {
+      this.$router.push(route)
+    },
+    logout () {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      this.$router.push({
+        name: 'root'
+      })
+    }
+  }
 }
 </script>
 
